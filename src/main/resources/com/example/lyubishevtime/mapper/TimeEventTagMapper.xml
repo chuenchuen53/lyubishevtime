@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.lyubishevtime.mapper.TimeEventTagMapper">
+    <update id="update">
+        update time_event_tag
+        <set>
+            <if test="color != null">
+                color = #{color}::time_event_tag_color,
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="updatedAt != null">
+                updatedAt = #{updatedAt}
+            </if>
+        </set>
+        where id = #{id} and user_id = #{user.id}
+    </update>
+</mapper>

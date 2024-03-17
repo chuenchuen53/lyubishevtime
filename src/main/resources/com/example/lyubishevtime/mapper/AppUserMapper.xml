@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.lyubishevtime.mapper.AppUserMapper">
+    <update id="update">
+        update app_user
+        <set>
+            <if test="password != null">
+                password = #{password},
+            </if>
+            <if test="nickname != null">
+                nickname = #{nickname}
+            </if>
+            <if test="photoUrl != null">
+                photoUrl = #{photoUrl}
+            </if>
+            <if test="updatedAt != null">
+                updatedAt = #{updatedAt}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

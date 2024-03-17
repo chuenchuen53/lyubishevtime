@@ -1,0 +1,28 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/lyubishevtime
+    hikari:
+      minimum-idle: 10
+      maximum-pool-size: 10
+      driver-class-name: org.postgresql.Driver
+      username: postgres
+      password: postgres
+
+cors:
+  allowed-origins: http://localhost:5173
+
+mybatis:
+  type-aliases-package: com.example.lyubishevtime.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+jwt:
+  token:
+    tokenExpiration: 120
+    tokenSignKey: Ri5iDP/iez8Q3w2bzNnbk1v33BWqcW1OjjSIHnBwpGs=
