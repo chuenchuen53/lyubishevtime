@@ -2,8 +2,10 @@ package com.example.lyubishevtime.service.impl;
 
 import com.example.lyubishevtime.auth.JwtHelper;
 import com.example.lyubishevtime.entity.AppUser;
+import com.example.lyubishevtime.entity.TimeEventTagOrder;
 import com.example.lyubishevtime.exception.ApiException;
 import com.example.lyubishevtime.mapper.AppUserMapper;
+import com.example.lyubishevtime.mapper.TimeEventTagOrderMapper;
 import com.example.lyubishevtime.request.user.LoginRequest;
 import com.example.lyubishevtime.request.user.SignupRequest;
 import com.example.lyubishevtime.response.user.LoginResponse;
@@ -12,18 +14,25 @@ import com.example.lyubishevtime.service.api.UserService;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collections;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final AppUserMapper appUserMapper;
+    private final TimeEventTagOrderMapper timeEventTagOrderMapper;
     private final JwtHelper jwtHelper;
 
-    public UserServiceImpl(AppUserMapper appUserMapper, JwtHelper jwtHelper) {
+    public UserServiceImpl(AppUserMapper appUserMapper, TimeEventTagOrderMapper timeEventTagOrderMapper,
+                           JwtHelper jwtHelper) {
         this.appUserMapper = appUserMapper;
+        this.timeEventTagOrderMapper = timeEventTagOrderMapper;
         this.jwtHelper = jwtHelper;
     }
 
     @Override
+    @Transactional
     public SignUpResponse signup(SignupRequest req) {
         if (isUsernameExist(req.getUsername())) {
             throw new ApiException(HttpStatus.CONFLICT, "Username already exists");
@@ -35,6 +44,13 @@ public class UserServiceImpl implements UserService {
                 .nickname(req.getNickname())
                 .build();
         appUserMapper.insert(appUser);
+
+        TimeEventTagOrder timeEventTagOrder = TimeEventTagOrder.builder()
+                .appUser(appUser)
+                .tagIds(Collections.emptyList())
+                .build();
+        timeEventTagOrderMapper.insert(timeEventTagOrder);
+
         return SignUpResponse.builder()
                 .username(req.getUsername())
                 .nickname(req.getNickname())

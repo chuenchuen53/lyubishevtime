@@ -18,8 +18,4 @@ public class TimeEventTagOrder {
     private List<Integer> tagIds;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    public Integer[] getTagIdsArr() {
-        return tagIds.toArray(new Integer[0]);
-    }
 }

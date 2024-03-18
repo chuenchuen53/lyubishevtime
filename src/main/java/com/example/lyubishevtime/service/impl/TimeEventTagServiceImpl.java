@@ -70,7 +70,7 @@ public class TimeEventTagServiceImpl implements TimeEventTagService {
 
     @Override
     public boolean reorder(TimeEventTagOrder timeEventTagOrder) {
-        int count = timeEventTagOrderMapper.upsert(timeEventTagOrder);
+        int count = timeEventTagOrderMapper.update(timeEventTagOrder);
         return count > 0;
     }
 }

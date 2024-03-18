@@ -3,6 +3,7 @@ package com.example.lyubishevtime.typehandler;
 import com.example.lyubishevtime.entity.TimeEventTagColor;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.MappedJdbcTypes;
 import org.apache.ibatis.type.MappedTypes;
 import org.springframework.stereotype.Component;
 
@@ -12,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @MappedTypes(TimeEventTagColor.class)
+@MappedJdbcTypes(JdbcType.ARRAY)
 @Component
 public class TimeEventTagColorTypeHandler extends BaseTypeHandler<TimeEventTagColor> {
 
