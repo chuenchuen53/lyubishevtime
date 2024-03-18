@@ -14,7 +14,7 @@ spring:
       password: postgres
 
 cors:
-  allowed-origins: http://localhost:5173
+  allowed-origins: http://localhost:3000
 
 mybatis:
   type-aliases-package: com.example.lyubishevtime.entity

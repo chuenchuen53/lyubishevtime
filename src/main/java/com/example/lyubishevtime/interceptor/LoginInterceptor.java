@@ -10,6 +10,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 
 
 @Component
@@ -23,6 +24,10 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, @NonNull HttpServletResponse response,
                              @NonNull Object handler) throws IOException {
+        if (Objects.equals(request.getMethod(), "OPTIONS")) {
+            return true;
+        }
+
         String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ") && !jwtHelper.isExpiration(authorizationHeader)) {
             return true;
