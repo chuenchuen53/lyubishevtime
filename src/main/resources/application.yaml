@@ -26,3 +26,6 @@ jwt:
   token:
     tokenExpiration: 120
     tokenSignKey: Ri5iDP/iez8Q3w2bzNnbk1v33BWqcW1OjjSIHnBwpGs=
+
+springdoc:
+  packages-to-scan: com.example.lyubishevtime.controller

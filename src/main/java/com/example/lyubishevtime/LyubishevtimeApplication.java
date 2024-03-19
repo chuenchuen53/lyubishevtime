@@ -11,6 +11,4 @@ public class LyubishevtimeApplication {
     public static void main(String[] args) {
         SpringApplication.run(LyubishevtimeApplication.class, args);
     }
-
-
 }

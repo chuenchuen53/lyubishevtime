@@ -65,6 +65,7 @@ public class UserServiceImpl implements UserService {
         }
         String token = jwtHelper.createToken(Long.valueOf(appUser.getId()));
         return LoginResponse.builder()
+                .id(appUser.getId())
                 .username(appUser.getUsername())
                 .nickname(appUser.getNickname())
                 .photoUrl(appUser.getPhotoUrl())

@@ -1,6 +1,5 @@
 package com.example.lyubishevtime.controller;
 
-import com.example.lyubishevtime.auth.JwtHelper;
 import com.example.lyubishevtime.entity.AppUser;
 import com.example.lyubishevtime.entity.TimeEventTag;
 import com.example.lyubishevtime.entity.TimeEventTagOrder;
@@ -19,18 +18,15 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class TimeEventTagController {
     private final TimeEventTagService timeEventTagService;
-    private final JwtHelper jwtHelper;
 
 
-    public TimeEventTagController(TimeEventTagService timeEventTagService, JwtHelper jwtHelper) {
+    public TimeEventTagController(TimeEventTagService timeEventTagService) {
         this.timeEventTagService = timeEventTagService;
-        this.jwtHelper = jwtHelper;
     }
 
     @PostMapping("time-event-tag")
     public AddTimeEventTagResponse addTimeEventTag(@Validated @RequestBody AddTimeEventTagRequest req,
-                                                   @RequestHeader("Authorization") String authorizationHeader) {
-        int userId = jwtHelper.getUserId(authorizationHeader).intValue();
+                                                   @RequestAttribute("userId") Integer userId) {
         AppUser user = new AppUser();
         user.setId(userId);
         TimeEventTag timeEventTag = TimeEventTag.builder()
@@ -42,16 +38,14 @@ public class TimeEventTagController {
     }
 
     @GetMapping("time-event-tag")
-    public ListTimeEventTagResponse listTimeEventTag(@RequestHeader("Authorization") String authorizationHeader) {
-        int userId = jwtHelper.getUserId(authorizationHeader).intValue();
+    public ListTimeEventTagResponse listTimeEventTag(@RequestAttribute("userId") Integer userId) {
         return timeEventTagService.listTimeEventTag(userId);
     }
 
     @PutMapping("time-event-tag")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@Validated @RequestBody UpdateTimeEventTagRequest req,
-                       @RequestHeader("Authorization") String authorizationHeader) {
-        int userId = jwtHelper.getUserId(authorizationHeader).intValue();
+                       @RequestAttribute("userId") Integer userId) {
         AppUser user = new AppUser();
         user.setId(userId);
         TimeEventTag timeEventTag = TimeEventTag.builder()
@@ -68,9 +62,7 @@ public class TimeEventTagController {
 
     @DeleteMapping("time-event-tag/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@Min(1) @PathVariable Integer id,
-                       @RequestHeader("Authorization") String authorizationHeader) {
-        int userId = jwtHelper.getUserId(authorizationHeader).intValue();
+    public void delete(@Min(1) @PathVariable Integer id, @RequestAttribute("userId") Integer userId) {
         boolean success = timeEventTagService.delete(id, userId);
         if (!success) {
             throw new ApiException(HttpStatus.NOT_FOUND, "Time event tag not found");
@@ -80,8 +72,7 @@ public class TimeEventTagController {
     @PostMapping("time-event-tag/reorder")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void reorder(@Validated @RequestBody ReorderTimeEventTagRequest req,
-                        @RequestHeader("Authorization") String authorizationHeader) {
-        int userId = jwtHelper.getUserId(authorizationHeader).intValue();
+                        @RequestAttribute("userId") Integer userId) {
         AppUser user = new AppUser();
         user.setId(userId);
         TimeEventTagOrder timeEventTagOrder = TimeEventTagOrder.builder()

@@ -1,5 +1,7 @@
 package com.example.lyubishevtime.response.user;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,8 +12,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LoginResponse {
+    @NotNull
+    private Integer id;
+
+    @NotNull
     private String username;
+
+    @NotNull
     private String nickname;
+
+    @Schema(nullable = true, requiredMode = Schema.RequiredMode.REQUIRED)
     private String photoUrl;
+
+    @NotNull
     private String token;
 }

@@ -30,6 +30,8 @@ public class LoginInterceptor implements HandlerInterceptor {
 
         String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ") && !jwtHelper.isExpiration(authorizationHeader)) {
+            Integer userId = jwtHelper.getUserId(authorizationHeader).intValue();
+            request.setAttribute("userId", userId);
             return true;
         }
 

@@ -1,9 +1,8 @@
 package com.example.lyubishevtime.config;
 
-import org.springframework.beans.factory.annotation.Value;
 import com.example.lyubishevtime.interceptor.LoginInterceptor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;

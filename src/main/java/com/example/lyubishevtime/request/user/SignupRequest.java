@@ -1,5 +1,6 @@
 package com.example.lyubishevtime.request.user;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -23,5 +24,6 @@ public class SignupRequest {
 
     @NotNull
     @NotBlank()
+    @Max(30)
     private String nickname;
 }
