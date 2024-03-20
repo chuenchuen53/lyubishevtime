@@ -8,6 +8,7 @@ import com.example.lyubishevtime.mapper.AppUserMapper;
 import com.example.lyubishevtime.mapper.TimeEventTagOrderMapper;
 import com.example.lyubishevtime.request.user.LoginRequest;
 import com.example.lyubishevtime.request.user.SignupRequest;
+import com.example.lyubishevtime.response.user.CurrentUserResponse;
 import com.example.lyubishevtime.response.user.LoginResponse;
 import com.example.lyubishevtime.response.user.SignUpResponse;
 import com.example.lyubishevtime.service.api.UserService;
@@ -29,6 +30,19 @@ public class UserServiceImpl implements UserService {
         this.appUserMapper = appUserMapper;
         this.timeEventTagOrderMapper = timeEventTagOrderMapper;
         this.jwtHelper = jwtHelper;
+    }
+
+    @Override
+    public CurrentUserResponse currentUser(int userId) {
+        AppUser appUser = appUserMapper.selectById(userId);
+        String token = jwtHelper.createToken(Long.valueOf(appUser.getId()));
+        return CurrentUserResponse.builder()
+                .id(appUser.getId())
+                .username(appUser.getUsername())
+                .nickname(appUser.getNickname())
+                .photoUrl(appUser.getPhotoUrl())
+                .token(token)
+                .build();
     }
 
     @Override

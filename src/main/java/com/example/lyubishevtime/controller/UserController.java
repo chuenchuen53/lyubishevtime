@@ -2,6 +2,7 @@ package com.example.lyubishevtime.controller;
 
 import com.example.lyubishevtime.request.user.LoginRequest;
 import com.example.lyubishevtime.request.user.SignupRequest;
+import com.example.lyubishevtime.response.user.CurrentUserResponse;
 import com.example.lyubishevtime.response.user.IsUsernameExistResponse;
 import com.example.lyubishevtime.response.user.LoginResponse;
 import com.example.lyubishevtime.response.user.SignUpResponse;
@@ -16,6 +17,11 @@ public class UserController {
 
     public UserController(UserService userService) {
         this.userService = userService;
+    }
+
+    @GetMapping("current-user")
+    public CurrentUserResponse currentUser(@RequestAttribute("userId") Integer userId) {
+        return userService.currentUser(userId);
     }
 
     @PostMapping("login")

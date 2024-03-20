@@ -16,6 +16,10 @@ public interface AppUserMapper {
             "= #{username}")
     AppUser selectByUsername(@Param("username") String username);
 
+    @Select("SELECT id, username, password, nickname, photo_url FROM app_user WHERE id " +
+            "= #{id}")
+    AppUser selectById(@Param("id") int id);
+
     @Select("SELECT COUNT(*) FROM app_user WHERE username = #{username}")
     int isUsernameExist(@Param("username") String username);
 

@@ -29,5 +29,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loginInterceptor).addPathPatterns("/time-event-tag/**");
+        registry.addInterceptor(loginInterceptor).addPathPatterns("/current-user");
     }
 }
