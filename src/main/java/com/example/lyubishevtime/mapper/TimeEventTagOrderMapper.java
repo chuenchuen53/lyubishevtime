@@ -17,6 +17,12 @@ public interface TimeEventTagOrderMapper {
             "updated_at = now() WHERE user_id = #{appUser.id}")
     int update(TimeEventTagOrder timeEventTagOrder);
 
+    @Update("UPDATE time_event_tag_order SET tag_ids = array_append(tag_ids, #{tagId}) WHERE user_id = #{userId}")
+    int appendTagId(@Param("userId") Integer userId, @Param("tagId") Integer tagId);
+
+    @Update("UPDATE time_event_tag_order SET tag_ids = array_remove(tag_ids, #{tagId}) WHERE user_id = #{userId}")
+    int removeTagId(Integer userId, Integer tagId);
+
     @Options(useGeneratedKeys = true, keyProperty = "id")
     @Insert("INSERT INTO time_event_tag_order (user_id, tag_ids) " +
             "VALUES (#{appUser.id}, " +

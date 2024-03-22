@@ -8,6 +8,7 @@ import com.example.lyubishevtime.response.tag.AddTimeEventTagResponse;
 import com.example.lyubishevtime.response.tag.ListTimeEventTagResponse;
 import com.example.lyubishevtime.service.api.TimeEventTagService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +25,7 @@ public class TimeEventTagServiceImpl implements TimeEventTagService {
     }
 
     @Override
+    @Transactional
     public AddTimeEventTagResponse addTimeEventTag(TimeEventTag timeEventTag) {
         timeEventTagMapper.addTimeEventTag(timeEventTag);
         var tag = com.example.lyubishevtime.response.tag.TimeEventTag
@@ -32,6 +34,7 @@ public class TimeEventTagServiceImpl implements TimeEventTagService {
                 .name(timeEventTag.getName())
                 .color(timeEventTag.getColor())
                 .build();
+        timeEventTagOrderMapper.appendTagId(timeEventTag.getUser().getId(), timeEventTag.getId());
         return new AddTimeEventTagResponse(tag);
     }
 
@@ -46,9 +49,7 @@ public class TimeEventTagServiceImpl implements TimeEventTagService {
                         .build())
                 .toList();
         var tagOrderEntity = timeEventTagOrderMapper.findByUserId(userId);
-        System.out.println("tagOrderEntity = " + tagOrderEntity);
         List<Integer> tagOrder = tagOrderEntity == null ? Collections.emptyList() : tagOrderEntity.getTagIds();
-        System.out.println("tagOrder = " + tagOrder);
         return ListTimeEventTagResponse.builder()
                 .timeEventTags(tagList)
                 .timeEventTagOrder(tagOrder)
@@ -57,15 +58,17 @@ public class TimeEventTagServiceImpl implements TimeEventTagService {
 
     @Override
     public boolean update(TimeEventTag timeEventTag) {
-        System.out.println("timeEventTag = " + timeEventTag);
         int count = timeEventTagMapper.update(timeEventTag);
         return count > 0;
     }
 
     @Override
+    @Transactional
     public boolean delete(Integer id, Integer userId) {
         int count = timeEventTagMapper.delete(id, userId);
-        return count > 0;
+        if (count == 0) return false;
+        timeEventTagOrderMapper.removeTagId(userId, id);
+        return true;
     }
 
     @Override
