@@ -7,19 +7,21 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TimeEvent {
+public class TimeEventEntity {
     private Integer id;
     private AppUser user;
+    private Integer tagId;
     private TimeEventTag tag;
-    private String name;
-    private Integer minute;
     private LocalDate date;
-    private Integer eventOrder;
+    private String name;
+    private LocalTime startTime;
+    private Integer minute;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

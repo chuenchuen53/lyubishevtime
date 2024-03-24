@@ -3,6 +3,7 @@ package com.example.lyubishevtime.mapper;
 import com.example.lyubishevtime.entity.TimeEventTag;
 import org.apache.ibatis.annotations.*;
 
+import java.sql.Time;
 import java.util.List;
 
 public interface TimeEventTagMapper {
@@ -19,4 +20,7 @@ public interface TimeEventTagMapper {
 
     @Delete("DELETE FROM time_event_tag WHERE id = #{id} AND user_id = #{userId}")
     int delete(@Param("id") Integer id, @Param("userId") Integer userId);
+
+    @Select("SELECT COUNT(*) FROM time_event_tag WHERE id = #{id} AND user_id = #{user.id}")
+    int countByIdAndUserId(TimeEventTag timeEventTag);
 }

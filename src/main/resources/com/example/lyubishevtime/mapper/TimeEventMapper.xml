@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.lyubishevtime.mapper.TimeEventMapper">
+    <select id="list">
+        SELECT id, user_id, tag_id, name, minute, date, start_time
+        FROM time_event
+        <where>
+            user_id = #{userId}
+            AND date BETWEEN #{filter.from} AND #{filter.to}
+            <if test="filter.tagIds != null and !filter.tagIds.isEmpty()">
+                AND tag_id IN
+                <foreach item="tagId" collection="filter.tagIds" open="(" separator="," close=")">
+                    #{tagId}
+                </foreach>
+            </if>
+        </where>
+    </select>
+</mapper>
