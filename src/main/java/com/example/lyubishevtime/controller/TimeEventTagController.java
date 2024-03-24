@@ -44,8 +44,8 @@ public class TimeEventTagController {
 
     @PutMapping("time-event-tag")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@Validated @RequestBody UpdateTimeEventTagRequest req,
-                       @RequestAttribute("userId") Integer userId) {
+    public void updateTimeEventTag(@Validated @RequestBody UpdateTimeEventTagRequest req,
+                                   @RequestAttribute("userId") Integer userId) {
         AppUser user = new AppUser();
         user.setId(userId);
         TimeEventTag timeEventTag = TimeEventTag.builder()
@@ -62,7 +62,7 @@ public class TimeEventTagController {
 
     @DeleteMapping("time-event-tag/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@Min(1) @PathVariable Integer id, @RequestAttribute("userId") Integer userId) {
+    public void deleteTimeEventTag(@Min(1) @PathVariable Integer id, @RequestAttribute("userId") Integer userId) {
         boolean success = timeEventTagService.delete(id, userId);
         if (!success) {
             throw new ApiException(HttpStatus.NOT_FOUND, "Time event tag not found");
@@ -71,8 +71,8 @@ public class TimeEventTagController {
 
     @PostMapping("time-event-tag/reorder")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void reorder(@Validated @RequestBody ReorderTimeEventTagRequest req,
-                        @RequestAttribute("userId") Integer userId) {
+    public void reorderTimeEventTag(@Validated @RequestBody ReorderTimeEventTagRequest req,
+                                    @RequestAttribute("userId") Integer userId) {
         AppUser user = new AppUser();
         user.setId(userId);
         TimeEventTagOrder timeEventTagOrder = TimeEventTagOrder.builder()
