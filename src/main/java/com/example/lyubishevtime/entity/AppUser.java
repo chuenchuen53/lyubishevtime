@@ -16,7 +16,7 @@ public class AppUser {
     private String username;
     private String password;
     private String nickname;
-    private String photoUrl;
+    private String profilePic;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
                 .id(appUser.getId())
                 .username(appUser.getUsername())
                 .nickname(appUser.getNickname())
-                .photoUrl(appUser.getPhotoUrl())
+                .profilePic(appUser.getProfilePic())
                 .token(token)
                 .build();
     }
@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
                 .id(appUser.getId())
                 .username(appUser.getUsername())
                 .nickname(appUser.getNickname())
-                .photoUrl(appUser.getPhotoUrl())
+                .profilePic(appUser.getProfilePic())
                 .token(token)
                 .build();
     }
@@ -90,5 +90,31 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isUsernameExist(String username) {
         return appUserMapper.isUsernameExist(username) == 1;
+    }
+
+    @Override
+    public boolean updatePersonInfo(Integer userId, String nickname, String profilePic) {
+        AppUser appUser = AppUser.builder()
+                .id(userId)
+                .nickname(nickname)
+                .profilePic(profilePic)
+                .build();
+        int updated = appUserMapper.update(appUser);
+        return updated == 1;
+    }
+
+
+    @Override
+    public boolean updatePassword(Integer userId, String oldPassword, String newPassword) {
+        AppUser appUser = appUserMapper.selectById(userId);
+        if (!BCrypt.checkpw(oldPassword, appUser.getPassword())) {
+            throw new ApiException(HttpStatus.UNAUTHORIZED, "Incorrect old password");
+        }
+        AppUser updatedAppUser = AppUser.builder()
+                .id(userId)
+                .password(BCrypt.hashpw(newPassword, BCrypt.gensalt()))
+                .build();
+        int updated = appUserMapper.update(updatedAppUser);
+        return updated == 1;
     }
 }

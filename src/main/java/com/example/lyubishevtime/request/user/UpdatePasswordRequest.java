@@ -1,7 +1,5 @@
 package com.example.lyubishevtime.request.user;
 
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -13,16 +11,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignupRequest {
+public class UpdatePasswordRequest {
     @NotNull
     @Pattern(regexp = "^[a-zA-Z0-9_]{6,16}$")
-    private String username;
+    private String oldPassword;
 
     @NotNull
     @Pattern(regexp = "^[a-zA-Z0-9_]{6,16}$")
-    private String password;
-
-    @NotBlank()
-    @Max(30)
-    private String nickname;
+    private String newPassword;
 }

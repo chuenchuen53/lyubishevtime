@@ -22,7 +22,7 @@ public class LoginResponse {
     private String nickname;
 
     @Schema(nullable = true, requiredMode = Schema.RequiredMode.REQUIRED)
-    private String photoUrl;
+    private String profilePic;
 
     @NotNull
     private String token;

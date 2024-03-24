@@ -8,15 +8,15 @@ import org.apache.ibatis.annotations.Select;
 
 public interface AppUserMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
-    @Insert("INSERT INTO app_user(username, password, nickname, photo_url) VALUES " +
-            "(#{username}, #{password}, #{nickname}, #{photoUrl})")
+    @Insert("INSERT INTO app_user(username, password, nickname, profile_pic) VALUES " +
+            "(#{username}, #{password}, #{nickname}, #{profilePic})")
     int insert(AppUser appUser);
 
-    @Select("SELECT id, username, password, nickname, photo_url FROM app_user WHERE username " +
+    @Select("SELECT id, username, password, nickname, profile_pic FROM app_user WHERE username " +
             "= #{username}")
     AppUser selectByUsername(@Param("username") String username);
 
-    @Select("SELECT id, username, password, nickname, photo_url FROM app_user WHERE id " +
+    @Select("SELECT id, username, password, nickname, profile_pic FROM app_user WHERE id " +
             "= #{id}")
     AppUser selectById(@Param("id") int id);
 

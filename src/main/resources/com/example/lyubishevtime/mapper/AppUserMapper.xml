@@ -10,14 +10,12 @@
                 password = #{password},
             </if>
             <if test="nickname != null">
-                nickname = #{nickname}
+                nickname = #{nickname},
             </if>
-            <if test="photoUrl != null">
-                photoUrl = #{photoUrl}
+            <if test="profilePic != null">
+                profile_pic = #{profilePic},
             </if>
-            <if test="updatedAt != null">
-                updatedAt = #{updatedAt}
-            </if>
+            updated_at = now()
         </set>
         where id = #{id}
     </update>

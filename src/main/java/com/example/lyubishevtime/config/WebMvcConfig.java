@@ -31,6 +31,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addInterceptor(loginInterceptor).addPathPatterns("/time-event-tag/**");
         registry.addInterceptor(loginInterceptor).addPathPatterns("/time-event/**");
         registry.addInterceptor(loginInterceptor).addPathPatterns("/summary/**");
+        registry.addInterceptor(loginInterceptor).addPathPatterns("/personal-info/**");
+        registry.addInterceptor(loginInterceptor).addPathPatterns("/auth/password/**");
         registry.addInterceptor(loginInterceptor).addPathPatterns("/current-user");
     }
 }
