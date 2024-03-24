@@ -11,9 +11,11 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ListFilter {
+    @NotNull
+    private Integer userId;
+    
+    @NotNull
+    private LocalDate date;
+
     private List<Integer> tagIds;
-    @NotNull
-    private LocalDate from;
-    @NotNull
-    private LocalDate to;
 }

@@ -13,5 +13,5 @@ public interface TimeEventService {
 
     boolean delete(Integer id, Integer userId);
 
-    ListTimeEventResponse list(Integer userId, ListFilter listFilter);
+    ListTimeEventResponse list(ListFilter listFilter);
 }

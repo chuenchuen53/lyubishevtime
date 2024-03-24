@@ -35,8 +35,8 @@ public class TimeEventController {
     }
 
     @PostMapping("time-event")
-    public AddTimeEventResponse add(@Validated @RequestBody AddTimeEventRequest request,
-                                    @RequestAttribute("userId") Integer userId) {
+    public AddTimeEventResponse addTimeEvent(@Validated @RequestBody AddTimeEventRequest request,
+                                             @RequestAttribute("userId") Integer userId) {
         AppUser user = AppUser.builder().id(userId).build();
         TimeEventTag tag = TimeEventTag.builder().id(request.getTagId()).build();
         TimeEventEntity entity = TimeEventEntity.builder()
@@ -52,8 +52,8 @@ public class TimeEventController {
 
     @PutMapping("time-event")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@Validated @RequestBody UpdateTimeEventRequest request,
-                       @RequestAttribute("userId") Integer userId) {
+    public void updateTimeEvent(@Validated @RequestBody UpdateTimeEventRequest request,
+                                @RequestAttribute("userId") Integer userId) {
         AppUser user = AppUser.builder().id(userId).build();
         TimeEventTag tag = TimeEventTag.builder().id(request.getTagId()).build();
         TimeEventEntity entity = TimeEventEntity.builder()
@@ -72,7 +72,7 @@ public class TimeEventController {
 
     @DeleteMapping("time-event/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@Min(1) @PathVariable Integer id, @RequestAttribute("userId") Integer userId) {
+    public void deleteTimeEvent(@Min(1) @PathVariable Integer id, @RequestAttribute("userId") Integer userId) {
         boolean success = timeEventService.delete(id, userId);
         if (!success) {
             throw new ApiException(HttpStatus.NOT_FOUND, "Time event not found");
@@ -82,16 +82,15 @@ public class TimeEventController {
     @GetMapping("time-event")
     public ListTimeEventResponse getEvents(
             @RequestParam(required = false) List<Integer> tagIds,
-            @RequestParam @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-            @RequestParam @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+            @RequestParam @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestAttribute("userId") Integer userId) {
         ListFilter filter = ListFilter.builder()
+                .userId(userId)
+                .date(date)
                 .tagIds(tagIds)
-                .from(from)
-                .to(to)
                 .build();
         ListTimeEventTagResponse timeEvent = timeEventTagService.listTimeEventTag(userId);
-        ListTimeEventResponse response = timeEventService.list(userId, filter);
+        ListTimeEventResponse response = timeEventService.list(filter);
         response.setTimeEventTags(timeEvent.getTimeEventTags());
         response.setTimeEventTagOrder(timeEvent.getTimeEventTagOrder());
         return response;

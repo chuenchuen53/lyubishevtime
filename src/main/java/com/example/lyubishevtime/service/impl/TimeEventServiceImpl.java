@@ -70,8 +70,8 @@ public class TimeEventServiceImpl implements TimeEventService {
     }
 
     @Override
-    public ListTimeEventResponse list(Integer userId, ListFilter listFilter) {
-        List<TimeEventEntity> timeEventEntities = timeEventMapper.list(userId, listFilter);
+    public ListTimeEventResponse list(ListFilter listFilter) {
+        List<TimeEventEntity> timeEventEntities = timeEventMapper.list(listFilter);
         List<TimeEvent> timeEvents = timeEventEntities.stream()
                 .map((entity) -> TimeEvent.builder()
                         .id(entity.getId())
