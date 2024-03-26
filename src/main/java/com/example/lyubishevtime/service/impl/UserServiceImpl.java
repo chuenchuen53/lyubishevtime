@@ -7,10 +7,10 @@ import com.example.lyubishevtime.exception.ApiException;
 import com.example.lyubishevtime.mapper.AppUserMapper;
 import com.example.lyubishevtime.mapper.TimeEventTagOrderMapper;
 import com.example.lyubishevtime.request.user.LoginRequest;
-import com.example.lyubishevtime.request.user.SignupRequest;
+import com.example.lyubishevtime.request.user.RegisterRequest;
 import com.example.lyubishevtime.response.user.CurrentUserResponse;
 import com.example.lyubishevtime.response.user.LoginResponse;
-import com.example.lyubishevtime.response.user.SignUpResponse;
+import com.example.lyubishevtime.response.user.RegisterResponse;
 import com.example.lyubishevtime.service.api.UserService;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.http.HttpStatus;
@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public SignUpResponse signup(SignupRequest req) {
+    public RegisterResponse register(RegisterRequest req) {
         if (isUsernameExist(req.getUsername())) {
             throw new ApiException(HttpStatus.CONFLICT, "Username already exists");
         }
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
                 .build();
         timeEventTagOrderMapper.insert(timeEventTagOrder);
 
-        return SignUpResponse.builder()
+        return RegisterResponse.builder()
                 .username(req.getUsername())
                 .nickname(req.getNickname())
                 .build();

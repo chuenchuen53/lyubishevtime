@@ -1,12 +1,12 @@
 package com.example.lyubishevtime.controller;
 
 import com.example.lyubishevtime.request.user.LoginRequest;
-import com.example.lyubishevtime.request.user.SignupRequest;
+import com.example.lyubishevtime.request.user.RegisterRequest;
 import com.example.lyubishevtime.request.user.UpdatePasswordRequest;
 import com.example.lyubishevtime.response.user.CurrentUserResponse;
 import com.example.lyubishevtime.response.user.IsUsernameExistResponse;
 import com.example.lyubishevtime.response.user.LoginResponse;
-import com.example.lyubishevtime.response.user.SignUpResponse;
+import com.example.lyubishevtime.response.user.RegisterResponse;
 import com.example.lyubishevtime.service.api.UserService;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.http.HttpStatus;
@@ -31,9 +31,9 @@ public class UserController {
         return userService.login(req);
     }
 
-    @PostMapping("signup")
-    public SignUpResponse signup(@Validated @RequestBody SignupRequest req) {
-        return userService.signup(req);
+    @PostMapping("register")
+    public RegisterResponse register(@Validated @RequestBody RegisterRequest req) {
+        return userService.register(req);
     }
 
     @GetMapping("is-username-exist/{username}")
