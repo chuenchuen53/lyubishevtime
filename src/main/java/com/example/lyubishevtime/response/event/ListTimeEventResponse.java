@@ -22,4 +22,7 @@ public class ListTimeEventResponse {
 
     @NotNull
     private List<Integer> timeEventTagOrder;
+
+    @NotNull
+    private Boolean haveNext;
 }

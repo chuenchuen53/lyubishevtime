@@ -6,8 +6,10 @@ import com.example.lyubishevtime.entity.TimeEventTag;
 import com.example.lyubishevtime.exception.ApiException;
 import com.example.lyubishevtime.request.event.AddTimeEventRequest;
 import com.example.lyubishevtime.request.event.ListFilter;
+import com.example.lyubishevtime.request.event.ListOneDayFilter;
 import com.example.lyubishevtime.request.event.UpdateTimeEventRequest;
 import com.example.lyubishevtime.response.event.AddTimeEventResponse;
+import com.example.lyubishevtime.response.event.ListOneDayTimeEventResponse;
 import com.example.lyubishevtime.response.event.ListTimeEventResponse;
 import com.example.lyubishevtime.response.tag.ListTimeEventTagResponse;
 import com.example.lyubishevtime.service.api.TimeEventService;
@@ -80,14 +82,33 @@ public class TimeEventController {
     }
 
     @GetMapping("time-event")
-    public ListTimeEventResponse getEvents(
+    public ListOneDayTimeEventResponse getOneDayEvents(
             @RequestParam(required = false) List<Integer> tagIds,
             @RequestParam @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestAttribute("userId") Integer userId) {
-        ListFilter filter = ListFilter.builder()
+        ListOneDayFilter filter = ListOneDayFilter.builder()
                 .userId(userId)
                 .date(date)
                 .tagIds(tagIds)
+                .build();
+        ListTimeEventTagResponse timeEvent = timeEventTagService.listTimeEventTag(userId);
+        ListOneDayTimeEventResponse response = timeEventService.listOneDay(filter);
+        response.setTimeEventTags(timeEvent.getTimeEventTags());
+        response.setTimeEventTagOrder(timeEvent.getTimeEventTagOrder());
+        return response;
+    }
+
+    @GetMapping("time-event/all-tag-events/{tagId}/{page}/{pageSize}")
+    public ListTimeEventResponse getAllTagEvents(
+            @Min(1) @PathVariable Integer tagId,
+            @Min(1) @PathVariable Integer page,
+            @Min(1) @PathVariable Integer pageSize,
+            @RequestAttribute("userId") Integer userId) {
+        ListFilter filter = ListFilter.builder()
+                .userId(userId)
+                .tagId(tagId)
+                .page(page)
+                .pageSize(pageSize)
                 .build();
         ListTimeEventTagResponse timeEvent = timeEventTagService.listTimeEventTag(userId);
         ListTimeEventResponse response = timeEventService.list(filter);
