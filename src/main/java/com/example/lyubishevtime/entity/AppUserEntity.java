@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppUser {
+public class AppUserEntity {
     private Integer id;
     private String username;
     private String password;

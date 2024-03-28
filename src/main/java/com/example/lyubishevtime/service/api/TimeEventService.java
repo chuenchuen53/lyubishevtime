@@ -2,8 +2,8 @@ package com.example.lyubishevtime.service.api;
 
 
 import com.example.lyubishevtime.entity.TimeEventEntity;
-import com.example.lyubishevtime.request.event.ListFilter;
-import com.example.lyubishevtime.request.event.ListOneDayFilter;
+import com.example.lyubishevtime.request.event.ListEventsFilter;
+import com.example.lyubishevtime.request.event.ListOneDayEventsFilter;
 import com.example.lyubishevtime.response.event.AddTimeEventResponse;
 import com.example.lyubishevtime.response.event.ListOneDayTimeEventResponse;
 import com.example.lyubishevtime.response.event.ListTimeEventResponse;
@@ -15,7 +15,7 @@ public interface TimeEventService {
 
     boolean delete(Integer id, Integer userId);
 
-    ListOneDayTimeEventResponse listOneDay(ListOneDayFilter listOneDayFilter);
+    ListOneDayTimeEventResponse listOneDay(ListOneDayEventsFilter listOneDayEventsFilter);
 
-    ListTimeEventResponse list(ListFilter listFilter);
+    ListTimeEventResponse list(ListEventsFilter listEventsFilter);
 }

@@ -1,20 +1,20 @@
 package com.example.lyubishevtime.service.api;
 
-import com.example.lyubishevtime.entity.TimeEventTag;
-import com.example.lyubishevtime.entity.TimeEventTagOrder;
+import com.example.lyubishevtime.entity.TimeEventTagEntity;
+import com.example.lyubishevtime.entity.TimeEventTagOrderEntity;
 import com.example.lyubishevtime.response.tag.AddTimeEventTagResponse;
 import com.example.lyubishevtime.response.tag.ListTimeEventTagResponse;
 
 public interface TimeEventTagService {
-    AddTimeEventTagResponse addTimeEventTag(TimeEventTag timeEventTag);
+    AddTimeEventTagResponse addTimeEventTag(TimeEventTagEntity timeEventTagEntity);
 
     ListTimeEventTagResponse listTimeEventTag(Integer userId);
 
-    boolean update(TimeEventTag timeEventTag);
+    boolean update(TimeEventTagEntity timeEventTagEntity);
 
     boolean delete(Integer id, Integer userId);
 
-    boolean reorder(TimeEventTagOrder timeEventTagOrder);
+    boolean reorder(TimeEventTagOrderEntity timeEventTagOrderEntity);
 
-    boolean anyEvent(TimeEventTag tag);
+    boolean anyEvent(TimeEventTagEntity tag);
 }

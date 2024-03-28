@@ -1,30 +1,30 @@
 package com.example.lyubishevtime.mapper;
 
 import com.example.lyubishevtime.entity.TimeEventEntity;
-import com.example.lyubishevtime.entity.TimeEventTag;
-import com.example.lyubishevtime.request.event.ListFilter;
-import com.example.lyubishevtime.request.event.ListOneDayFilter;
+import com.example.lyubishevtime.entity.TimeEventTagEntity;
+import com.example.lyubishevtime.request.event.ListEventsFilter;
+import com.example.lyubishevtime.request.event.ListOneDayEventsFilter;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
 public interface TimeEventMapper {
     @Insert("INSERT INTO time_event (user_id, tag_id, date, name, start_time, minute) " +
-            "VALUES (#{user.id}, #{tag.id}, #{date}, #{name}, #{startTime}, #{minute})")
+            "VALUES (#{userId}, #{tagId}, #{date}, #{name}, #{startTime}, #{minute})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     Integer add(TimeEventEntity timeEventEntity);
 
-    @Update("UPDATE time_event SET tag_id = #{tag.id}, name = #{name}, start_time = #{startTime}," +
-            " minute = #{minute}, updated_at = now() WHERE id = #{id} AND user_id = #{user.id}")
+    @Update("UPDATE time_event SET tag_id = #{tagId}, name = #{name}, start_time = #{startTime}," +
+            " minute = #{minute}, updated_at = now() WHERE id = #{id} AND user_id = #{userId}")
     int update(TimeEventEntity timeEventEntity);
 
     @Delete("DELETE FROM time_event WHERE id = #{id} AND user_id = #{userId}")
-    int delete(Integer id, Integer userId);
+    int delete(@Param("id") Integer id, @Param("userId") Integer userId);
 
-    List<TimeEventEntity> listWithOneDay(ListOneDayFilter filter);
+    List<TimeEventEntity> listWithOneDay(ListOneDayEventsFilter filter);
 
-    List<TimeEventEntity> listAllTagEvents(ListFilter filter);
+    List<TimeEventEntity> listAllTagEvents(ListEventsFilter filter);
 
-    @Select("SELECT EXISTS (SELECT 1 FROM time_event WHERE tag_id = #{id}  AND user_id = #{user.id})")
-    boolean anyEvent(TimeEventTag tag);
+    @Select("SELECT EXISTS (SELECT 1 FROM time_event WHERE tag_id = #{id} AND user_id = #{userId})")
+    boolean anyEventForTag(TimeEventTagEntity tag);
 }

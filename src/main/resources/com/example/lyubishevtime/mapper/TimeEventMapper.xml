@@ -3,9 +3,8 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.lyubishevtime.mapper.TimeEventMapper">
-    <select id="listWithOneDay">
-        SELECT id, user_id, tag_id, name, minute, date, start_time
-        FROM time_event
+    <select id="listWithOneDay" resultType="com.example.lyubishevtime.entity.TimeEventEntity">
+        SELECT id, tag_id, name, minute, date, start_time FROM time_event
         <where>
             user_id = #{userId}
             AND date = #{date}
@@ -17,11 +16,10 @@
             </if>
         </where>
     </select>
-    <select id="listAllTagEvents">
-        SELECT id, user_id, tag_id, name, minute, date, start_time
-        FROM time_event
+    <select id="listAllTagEvents" resultType="com.example.lyubishevtime.entity.TimeEventEntity">
+        SELECT id, tag_id, name, minute, date, start_time FROM time_event
         WHERE user_id = #{userId} and tag_id = #{tagId}
-        order by date desc, start_time asc
-        limit #{limit} offset #{offset}
+        ORDER by date DESC, start_time ASC
+        LIMIT #{limit} OFFSET #{offset}
     </select>
 </mapper>

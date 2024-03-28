@@ -6,16 +6,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TimeEventTagOrder {
+public class TimeEventTagEntity {
     private Integer id;
-    private AppUser appUser;
-    private List<Integer> tagIds;
+    private Integer userId;
+    private TimeEventTagColor color;
+    private String name;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

@@ -15,9 +15,8 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class TimeEventEntity {
     private Integer id;
-    private AppUser user;
+    private Integer userId;
     private Integer tagId;
-    private TimeEventTag tag;
     private LocalDate date;
     private String name;
     private LocalTime startTime;

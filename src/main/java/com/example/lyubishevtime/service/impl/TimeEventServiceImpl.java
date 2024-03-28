@@ -1,12 +1,12 @@
 package com.example.lyubishevtime.service.impl;
 
 import com.example.lyubishevtime.entity.TimeEventEntity;
-import com.example.lyubishevtime.entity.TimeEventTag;
+import com.example.lyubishevtime.entity.TimeEventTagEntity;
 import com.example.lyubishevtime.exception.ApiException;
 import com.example.lyubishevtime.mapper.TimeEventMapper;
 import com.example.lyubishevtime.mapper.TimeEventTagMapper;
-import com.example.lyubishevtime.request.event.ListFilter;
-import com.example.lyubishevtime.request.event.ListOneDayFilter;
+import com.example.lyubishevtime.request.event.ListEventsFilter;
+import com.example.lyubishevtime.request.event.ListOneDayEventsFilter;
 import com.example.lyubishevtime.response.event.AddTimeEventResponse;
 import com.example.lyubishevtime.response.event.ListOneDayTimeEventResponse;
 import com.example.lyubishevtime.response.event.ListTimeEventResponse;
@@ -29,19 +29,18 @@ public class TimeEventServiceImpl implements TimeEventService {
 
     @Override
     public AddTimeEventResponse add(TimeEventEntity timeEventEntity) {
-        TimeEventTag tag = TimeEventTag.builder()
-                .id(timeEventEntity.getTag().getId())
-                .user(timeEventEntity.getUser())
+        TimeEventTagEntity tag = TimeEventTagEntity.builder()
+                .id(timeEventEntity.getTagId())
+                .userId(timeEventEntity.getUserId())
                 .build();
-        int count = timeEventTagMapper.countByIdAndUserId(tag);
-        if (count == 0) {
+        if (!timeEventTagMapper.isTagExist(tag)) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Invalid Tag");
         }
 
         timeEventMapper.add(timeEventEntity);
         TimeEvent event = TimeEvent.builder()
                 .id(timeEventEntity.getId())
-                .tagId(timeEventEntity.getTag().getId())
+                .tagId(timeEventEntity.getTagId())
                 .date(timeEventEntity.getDate())
                 .name(timeEventEntity.getName())
                 .startTime(timeEventEntity.getStartTime())
@@ -52,12 +51,12 @@ public class TimeEventServiceImpl implements TimeEventService {
 
     @Override
     public boolean update(TimeEventEntity timeEventEntity) {
-        TimeEventTag tag = TimeEventTag.builder()
-                .id(timeEventEntity.getTag().getId())
-                .user(timeEventEntity.getUser())
+        TimeEventTagEntity tag = TimeEventTagEntity.builder()
+                .id(timeEventEntity.getTagId())
+                .userId(timeEventEntity.getUserId())
                 .build();
-        int count = timeEventTagMapper.countByIdAndUserId(tag);
-        if (count == 0) {
+
+        if (!timeEventTagMapper.isTagExist(tag)) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "Invalid Tag");
         }
 
@@ -72,8 +71,8 @@ public class TimeEventServiceImpl implements TimeEventService {
     }
 
     @Override
-    public ListOneDayTimeEventResponse listOneDay(ListOneDayFilter listOneDayFilter) {
-        List<TimeEventEntity> timeEventEntities = timeEventMapper.listWithOneDay(listOneDayFilter);
+    public ListOneDayTimeEventResponse listOneDay(ListOneDayEventsFilter listOneDayEventsFilter) {
+        List<TimeEventEntity> timeEventEntities = timeEventMapper.listWithOneDay(listOneDayEventsFilter);
         List<TimeEvent> timeEvents = timeEventEntities.stream()
                 .map((entity) -> TimeEvent.builder()
                         .id(entity.getId())
@@ -90,9 +89,9 @@ public class TimeEventServiceImpl implements TimeEventService {
     }
 
     @Override
-    public ListTimeEventResponse list(ListFilter listFilter) {
-        List<TimeEventEntity> timeEventEntities = timeEventMapper.listAllTagEvents(listFilter);
-        boolean haveNext = timeEventEntities.size() > listFilter.getPageSize();
+    public ListTimeEventResponse list(ListEventsFilter listEventsFilter) {
+        List<TimeEventEntity> timeEventEntities = timeEventMapper.listAllTagEvents(listEventsFilter);
+        boolean haveNext = timeEventEntities.size() > listEventsFilter.getPageSize();
         if (haveNext) {
             timeEventEntities.remove(timeEventEntities.size() - 1);
         }

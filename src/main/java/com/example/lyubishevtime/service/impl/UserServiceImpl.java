@@ -1,8 +1,8 @@
 package com.example.lyubishevtime.service.impl;
 
 import com.example.lyubishevtime.auth.JwtHelper;
-import com.example.lyubishevtime.entity.AppUser;
-import com.example.lyubishevtime.entity.TimeEventTagOrder;
+import com.example.lyubishevtime.entity.AppUserEntity;
+import com.example.lyubishevtime.entity.TimeEventTagOrderEntity;
 import com.example.lyubishevtime.exception.ApiException;
 import com.example.lyubishevtime.mapper.AppUserMapper;
 import com.example.lyubishevtime.mapper.TimeEventTagOrderMapper;
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public CurrentUserResponse currentUser(int userId) {
-        AppUser appUser = appUserMapper.selectById(userId);
+        AppUserEntity appUser = appUserMapper.selectById(userId);
         String token = jwtHelper.createToken(Long.valueOf(appUser.getId()));
         return CurrentUserResponse.builder()
                 .id(appUser.getId())
@@ -52,18 +52,18 @@ public class UserServiceImpl implements UserService {
             throw new ApiException(HttpStatus.CONFLICT, "Username already exists");
         }
 
-        AppUser appUser = AppUser.builder()
+        AppUserEntity appUser = AppUserEntity.builder()
                 .username(req.getUsername())
                 .password(BCrypt.hashpw(req.getPassword(), BCrypt.gensalt()))
                 .nickname(req.getNickname())
                 .build();
         appUserMapper.insert(appUser);
 
-        TimeEventTagOrder timeEventTagOrder = TimeEventTagOrder.builder()
-                .appUser(appUser)
+        TimeEventTagOrderEntity timeEventTagOrderEntity = TimeEventTagOrderEntity.builder()
+                .userId(appUser.getId())
                 .tagIds(Collections.emptyList())
                 .build();
-        timeEventTagOrderMapper.insert(timeEventTagOrder);
+        timeEventTagOrderMapper.insert(timeEventTagOrderEntity);
 
         return RegisterResponse.builder()
                 .username(req.getUsername())
@@ -73,44 +73,43 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public LoginResponse login(LoginRequest req) {
-        AppUser appUser = appUserMapper.selectByUsername(req.getUsername());
-        if (appUser == null || !BCrypt.checkpw(req.getPassword(), appUser.getPassword())) {
+        AppUserEntity appUserEntity = appUserMapper.selectByUsername(req.getUsername());
+        if (appUserEntity == null || !BCrypt.checkpw(req.getPassword(), appUserEntity.getPassword())) {
             throw new ApiException(HttpStatus.UNAUTHORIZED, "Incorrect username or password");
         }
-        String token = jwtHelper.createToken(Long.valueOf(appUser.getId()));
+        String token = jwtHelper.createToken(Long.valueOf(appUserEntity.getId()));
         return LoginResponse.builder()
-                .id(appUser.getId())
-                .username(appUser.getUsername())
-                .nickname(appUser.getNickname())
-                .profilePic(appUser.getProfilePic())
+                .id(appUserEntity.getId())
+                .username(appUserEntity.getUsername())
+                .nickname(appUserEntity.getNickname())
+                .profilePic(appUserEntity.getProfilePic())
                 .token(token)
                 .build();
     }
 
     @Override
     public boolean isUsernameExist(String username) {
-        return appUserMapper.isUsernameExist(username) == 1;
+        return appUserMapper.isUsernameExist(username);
     }
 
     @Override
     public boolean updatePersonInfo(Integer userId, String nickname, String profilePic) {
-        AppUser appUser = AppUser.builder()
+        AppUserEntity appUserEntity = AppUserEntity.builder()
                 .id(userId)
                 .nickname(nickname)
                 .profilePic(profilePic)
                 .build();
-        int updated = appUserMapper.update(appUser);
+        int updated = appUserMapper.update(appUserEntity);
         return updated == 1;
     }
 
-
     @Override
     public boolean updatePassword(Integer userId, String oldPassword, String newPassword) {
-        AppUser appUser = appUserMapper.selectById(userId);
-        if (!BCrypt.checkpw(oldPassword, appUser.getPassword())) {
+        AppUserEntity appUserEntity = appUserMapper.selectById(userId);
+        if (!BCrypt.checkpw(oldPassword, appUserEntity.getPassword())) {
             throw new ApiException(HttpStatus.UNAUTHORIZED, "Incorrect old password");
         }
-        AppUser updatedAppUser = AppUser.builder()
+        AppUserEntity updatedAppUser = AppUserEntity.builder()
                 .id(userId)
                 .password(BCrypt.hashpw(newPassword, BCrypt.gensalt()))
                 .build();

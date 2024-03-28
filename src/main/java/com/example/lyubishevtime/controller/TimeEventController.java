@@ -1,12 +1,10 @@
 package com.example.lyubishevtime.controller;
 
-import com.example.lyubishevtime.entity.AppUser;
 import com.example.lyubishevtime.entity.TimeEventEntity;
-import com.example.lyubishevtime.entity.TimeEventTag;
 import com.example.lyubishevtime.exception.ApiException;
 import com.example.lyubishevtime.request.event.AddTimeEventRequest;
-import com.example.lyubishevtime.request.event.ListFilter;
-import com.example.lyubishevtime.request.event.ListOneDayFilter;
+import com.example.lyubishevtime.request.event.ListEventsFilter;
+import com.example.lyubishevtime.request.event.ListOneDayEventsFilter;
 import com.example.lyubishevtime.request.event.UpdateTimeEventRequest;
 import com.example.lyubishevtime.response.event.AddTimeEventResponse;
 import com.example.lyubishevtime.response.event.ListOneDayTimeEventResponse;
@@ -39,11 +37,10 @@ public class TimeEventController {
     @PostMapping("time-event")
     public AddTimeEventResponse addTimeEvent(@Validated @RequestBody AddTimeEventRequest request,
                                              @RequestAttribute("userId") Integer userId) {
-        AppUser user = AppUser.builder().id(userId).build();
-        TimeEventTag tag = TimeEventTag.builder().id(request.getTagId()).build();
         TimeEventEntity entity = TimeEventEntity.builder()
-                .user(user)
-                .tag(tag)
+                .userId(userId)
+                // .tag(tag)
+                .tagId(request.getTagId())
                 .date(request.getDate())
                 .name(request.getName())
                 .startTime(request.getStartTime())
@@ -56,12 +53,10 @@ public class TimeEventController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateTimeEvent(@Validated @RequestBody UpdateTimeEventRequest request,
                                 @RequestAttribute("userId") Integer userId) {
-        AppUser user = AppUser.builder().id(userId).build();
-        TimeEventTag tag = TimeEventTag.builder().id(request.getTagId()).build();
         TimeEventEntity entity = TimeEventEntity.builder()
                 .id(request.getId())
-                .user(user)
-                .tag(tag)
+                .userId(userId)
+                .tagId(request.getTagId())
                 .name(request.getName())
                 .startTime(request.getStartTime())
                 .minute(request.getMinute())
@@ -86,7 +81,7 @@ public class TimeEventController {
             @RequestParam(required = false) List<Integer> tagIds,
             @RequestParam @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
             @RequestAttribute("userId") Integer userId) {
-        ListOneDayFilter filter = ListOneDayFilter.builder()
+        ListOneDayEventsFilter filter = ListOneDayEventsFilter.builder()
                 .userId(userId)
                 .date(date)
                 .tagIds(tagIds)
@@ -104,7 +99,7 @@ public class TimeEventController {
             @Min(1) @PathVariable Integer page,
             @Min(1) @PathVariable Integer pageSize,
             @RequestAttribute("userId") Integer userId) {
-        ListFilter filter = ListFilter.builder()
+        ListEventsFilter filter = ListEventsFilter.builder()
                 .userId(userId)
                 .tagId(tagId)
                 .page(page)

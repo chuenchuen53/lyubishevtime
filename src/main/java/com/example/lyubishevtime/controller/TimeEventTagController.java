@@ -1,8 +1,8 @@
 package com.example.lyubishevtime.controller;
 
-import com.example.lyubishevtime.entity.AppUser;
-import com.example.lyubishevtime.entity.TimeEventTag;
-import com.example.lyubishevtime.entity.TimeEventTagOrder;
+import com.example.lyubishevtime.entity.AppUserEntity;
+import com.example.lyubishevtime.entity.TimeEventTagEntity;
+import com.example.lyubishevtime.entity.TimeEventTagOrderEntity;
 import com.example.lyubishevtime.exception.ApiException;
 import com.example.lyubishevtime.request.tag.AddTimeEventTagRequest;
 import com.example.lyubishevtime.request.tag.ReorderTimeEventTagRequest;
@@ -28,14 +28,14 @@ public class TimeEventTagController {
     @PostMapping("time-event-tag")
     public AddTimeEventTagResponse addTimeEventTag(@Validated @RequestBody AddTimeEventTagRequest req,
                                                    @RequestAttribute("userId") Integer userId) {
-        AppUser user = new AppUser();
+        AppUserEntity user = new AppUserEntity();
         user.setId(userId);
-        TimeEventTag timeEventTag = TimeEventTag.builder()
+        TimeEventTagEntity timeEventTagEntity = TimeEventTagEntity.builder()
                 .name(req.getName())
                 .color(req.getColor())
-                .user(user)
+                .userId(userId)
                 .build();
-        return timeEventTagService.addTimeEventTag(timeEventTag);
+        return timeEventTagService.addTimeEventTag(timeEventTagEntity);
     }
 
     @GetMapping("time-event-tag")
@@ -47,15 +47,13 @@ public class TimeEventTagController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateTimeEventTag(@Validated @RequestBody UpdateTimeEventTagRequest req,
                                    @RequestAttribute("userId") Integer userId) {
-        AppUser user = new AppUser();
-        user.setId(userId);
-        TimeEventTag timeEventTag = TimeEventTag.builder()
+        TimeEventTagEntity timeEventTagEntity = TimeEventTagEntity.builder()
                 .id(req.getId())
                 .name(req.getName())
                 .color(req.getColor())
-                .user(user)
+                .userId(userId)
                 .build();
-        boolean success = timeEventTagService.update(timeEventTag);
+        boolean success = timeEventTagService.update(timeEventTagEntity);
         if (!success) {
             throw new ApiException(HttpStatus.NOT_FOUND, "Time event tag not found");
         }
@@ -74,13 +72,11 @@ public class TimeEventTagController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void reorderTimeEventTag(@Validated @RequestBody ReorderTimeEventTagRequest req,
                                     @RequestAttribute("userId") Integer userId) {
-        AppUser user = new AppUser();
-        user.setId(userId);
-        TimeEventTagOrder timeEventTagOrder = TimeEventTagOrder.builder()
-                .appUser(user)
+        TimeEventTagOrderEntity timeEventTagOrderEntity = TimeEventTagOrderEntity.builder()
+                .userId(userId)
                 .tagIds(req.getTagIds())
                 .build();
-        boolean success = timeEventTagService.reorder(timeEventTagOrder);
+        boolean success = timeEventTagService.reorder(timeEventTagOrderEntity);
         if (!success) {
             throw new ApiException(HttpStatus.NOT_FOUND, "Time event tag not found");
         }
@@ -88,9 +84,9 @@ public class TimeEventTagController {
 
     @GetMapping("time-event-tag/any-event/{id}")
     public AnyEventResponse anyEvent(@Min(1) @PathVariable Integer id, @RequestAttribute("userId") Integer userId) {
-        TimeEventTag tag = TimeEventTag.builder()
+        TimeEventTagEntity tag = TimeEventTagEntity.builder()
                 .id(id)
-                .user(AppUser.builder().id(userId).build())
+                .userId(userId)
                 .build();
         return new AnyEventResponse(timeEventTagService.anyEvent(tag));
     }

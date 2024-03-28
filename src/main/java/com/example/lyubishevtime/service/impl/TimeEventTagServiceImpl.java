@@ -1,7 +1,7 @@
 package com.example.lyubishevtime.service.impl;
 
-import com.example.lyubishevtime.entity.TimeEventTag;
-import com.example.lyubishevtime.entity.TimeEventTagOrder;
+import com.example.lyubishevtime.entity.TimeEventTagEntity;
+import com.example.lyubishevtime.entity.TimeEventTagOrderEntity;
 import com.example.lyubishevtime.mapper.TimeEventMapper;
 import com.example.lyubishevtime.mapper.TimeEventTagMapper;
 import com.example.lyubishevtime.mapper.TimeEventTagOrderMapper;
@@ -29,15 +29,15 @@ public class TimeEventTagServiceImpl implements TimeEventTagService {
 
     @Override
     @Transactional
-    public AddTimeEventTagResponse addTimeEventTag(TimeEventTag timeEventTag) {
-        timeEventTagMapper.addTimeEventTag(timeEventTag);
+    public AddTimeEventTagResponse addTimeEventTag(TimeEventTagEntity timeEventTagEntity) {
+        timeEventTagMapper.addTimeEventTag(timeEventTagEntity);
         var tag = com.example.lyubishevtime.response.tag.TimeEventTag
                 .builder()
-                .id(timeEventTag.getId())
-                .name(timeEventTag.getName())
-                .color(timeEventTag.getColor())
+                .id(timeEventTagEntity.getId())
+                .name(timeEventTagEntity.getName())
+                .color(timeEventTagEntity.getColor())
                 .build();
-        timeEventTagOrderMapper.appendTagId(timeEventTag.getUser().getId(), timeEventTag.getId());
+        timeEventTagOrderMapper.appendTagId(timeEventTagEntity.getUserId(), timeEventTagEntity.getId());
         return new AddTimeEventTagResponse(tag);
     }
 
@@ -60,8 +60,8 @@ public class TimeEventTagServiceImpl implements TimeEventTagService {
     }
 
     @Override
-    public boolean update(TimeEventTag timeEventTag) {
-        int count = timeEventTagMapper.update(timeEventTag);
+    public boolean update(TimeEventTagEntity timeEventTagEntity) {
+        int count = timeEventTagMapper.update(timeEventTagEntity);
         return count > 0;
     }
 
@@ -75,13 +75,13 @@ public class TimeEventTagServiceImpl implements TimeEventTagService {
     }
 
     @Override
-    public boolean reorder(TimeEventTagOrder timeEventTagOrder) {
-        int count = timeEventTagOrderMapper.update(timeEventTagOrder);
+    public boolean reorder(TimeEventTagOrderEntity timeEventTagOrderEntity) {
+        int count = timeEventTagOrderMapper.update(timeEventTagOrderEntity);
         return count > 0;
     }
 
     @Override
-    public boolean anyEvent(TimeEventTag tag) {
-        return timeEventMapper.anyEvent(tag);
+    public boolean anyEvent(TimeEventTagEntity tag) {
+        return timeEventMapper.anyEventForTag(tag);
     }
 }

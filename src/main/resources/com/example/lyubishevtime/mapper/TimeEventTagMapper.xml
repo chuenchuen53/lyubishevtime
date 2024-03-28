@@ -12,10 +12,8 @@
             <if test="name != null">
                 name = #{name},
             </if>
-            <if test="updatedAt != null">
-                updatedAt = #{updatedAt}
-            </if>
+            updated_at = now()
         </set>
-        where id = #{id} and user_id = #{user.id}
+        where id = #{id} and user_id = #{userId}
     </update>
 </mapper>

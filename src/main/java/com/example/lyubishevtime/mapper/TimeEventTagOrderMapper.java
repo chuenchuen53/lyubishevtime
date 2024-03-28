@@ -1,6 +1,6 @@
 package com.example.lyubishevtime.mapper;
 
-import com.example.lyubishevtime.entity.TimeEventTagOrder;
+import com.example.lyubishevtime.entity.TimeEventTagOrderEntity;
 import com.example.lyubishevtime.typehandler.IntegerArrayTypeHandler;
 import org.apache.ibatis.annotations.*;
 
@@ -10,22 +10,22 @@ public interface TimeEventTagOrderMapper {
             @Result(property = "tagIds", column = "tag_ids",
                     typeHandler = IntegerArrayTypeHandler.class)
     })
-    TimeEventTagOrder findByUserId(@Param("userId") Integer userId);
+    TimeEventTagOrderEntity findByUserId(@Param("userId") Integer userId);
 
     @Update("UPDATE time_event_tag_order SET tag_ids = " +
             "#{tagIds, jdbcType=ARRAY, typeHandler=com.example.lyubishevtime.typehandler.IntegerArrayTypeHandler}, " +
-            "updated_at = now() WHERE user_id = #{appUser.id}")
-    int update(TimeEventTagOrder timeEventTagOrder);
+            "updated_at = now() WHERE user_id = #{userId}")
+    int update(TimeEventTagOrderEntity timeEventTagOrderEntity);
 
     @Update("UPDATE time_event_tag_order SET tag_ids = array_append(tag_ids, #{tagId}) WHERE user_id = #{userId}")
     int appendTagId(@Param("userId") Integer userId, @Param("tagId") Integer tagId);
 
     @Update("UPDATE time_event_tag_order SET tag_ids = array_remove(tag_ids, #{tagId}) WHERE user_id = #{userId}")
-    int removeTagId(Integer userId, Integer tagId);
+    int removeTagId(@Param("userId") Integer userId, @Param("tagId") Integer tagId);
 
     @Options(useGeneratedKeys = true, keyProperty = "id")
     @Insert("INSERT INTO time_event_tag_order (user_id, tag_ids) " +
-            "VALUES (#{appUser.id}, " +
+            "VALUES (#{userId}, " +
             "#{tagIds, jdbcType=ARRAY, typeHandler=com.example.lyubishevtime.typehandler.IntegerArrayTypeHandler})")
-    int insert(TimeEventTagOrder timeEventTagOrder);
+    int insert(TimeEventTagOrderEntity timeEventTagOrderEntity);
 }
