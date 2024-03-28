@@ -3,7 +3,6 @@ package com.example.lyubishevtime.mapper;
 import com.example.lyubishevtime.entity.TimeEventTag;
 import org.apache.ibatis.annotations.*;
 
-import java.sql.Time;
 import java.util.List;
 
 public interface TimeEventTagMapper {

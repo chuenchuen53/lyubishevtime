@@ -8,6 +8,7 @@ import com.example.lyubishevtime.request.tag.AddTimeEventTagRequest;
 import com.example.lyubishevtime.request.tag.ReorderTimeEventTagRequest;
 import com.example.lyubishevtime.request.tag.UpdateTimeEventTagRequest;
 import com.example.lyubishevtime.response.tag.AddTimeEventTagResponse;
+import com.example.lyubishevtime.response.tag.AnyEventResponse;
 import com.example.lyubishevtime.response.tag.ListTimeEventTagResponse;
 import com.example.lyubishevtime.service.api.TimeEventTagService;
 import jakarta.validation.constraints.Min;
@@ -85,4 +86,12 @@ public class TimeEventTagController {
         }
     }
 
+    @GetMapping("time-event-tag/any-event/{id}")
+    public AnyEventResponse anyEvent(@Min(1) @PathVariable Integer id, @RequestAttribute("userId") Integer userId) {
+        TimeEventTag tag = TimeEventTag.builder()
+                .id(id)
+                .user(AppUser.builder().id(userId).build())
+                .build();
+        return new AnyEventResponse(timeEventTagService.anyEvent(tag));
+    }
 }

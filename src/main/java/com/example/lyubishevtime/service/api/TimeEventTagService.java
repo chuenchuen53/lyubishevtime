@@ -15,4 +15,6 @@ public interface TimeEventTagService {
     boolean delete(Integer id, Integer userId);
 
     boolean reorder(TimeEventTagOrder timeEventTagOrder);
+
+    boolean anyEvent(TimeEventTag tag);
 }

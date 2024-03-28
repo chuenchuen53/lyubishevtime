@@ -1,6 +1,7 @@
 package com.example.lyubishevtime.mapper;
 
 import com.example.lyubishevtime.entity.TimeEventEntity;
+import com.example.lyubishevtime.entity.TimeEventTag;
 import com.example.lyubishevtime.request.event.ListFilter;
 import org.apache.ibatis.annotations.*;
 
@@ -20,4 +21,7 @@ public interface TimeEventMapper {
     int delete(Integer id, Integer userId);
 
     List<TimeEventEntity> list(ListFilter filter);
+
+    @Select("SELECT EXISTS (SELECT 1 FROM time_event WHERE tag_id = #{id}  AND user_id = #{user.id})")
+    boolean anyEvent(TimeEventTag tag);
 }

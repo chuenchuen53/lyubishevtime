@@ -2,6 +2,7 @@ package com.example.lyubishevtime.service.impl;
 
 import com.example.lyubishevtime.entity.TimeEventTag;
 import com.example.lyubishevtime.entity.TimeEventTagOrder;
+import com.example.lyubishevtime.mapper.TimeEventMapper;
 import com.example.lyubishevtime.mapper.TimeEventTagMapper;
 import com.example.lyubishevtime.mapper.TimeEventTagOrderMapper;
 import com.example.lyubishevtime.response.tag.AddTimeEventTagResponse;
@@ -17,11 +18,13 @@ import java.util.List;
 public class TimeEventTagServiceImpl implements TimeEventTagService {
     private final TimeEventTagMapper timeEventTagMapper;
     private final TimeEventTagOrderMapper timeEventTagOrderMapper;
+    private final TimeEventMapper timeEventMapper;
 
     public TimeEventTagServiceImpl(TimeEventTagMapper timeEventTagMapper,
-                                   TimeEventTagOrderMapper timeEventTagOrderMapper) {
+                                   TimeEventTagOrderMapper timeEventTagOrderMapper, TimeEventMapper timeEventMapper) {
         this.timeEventTagMapper = timeEventTagMapper;
         this.timeEventTagOrderMapper = timeEventTagOrderMapper;
+        this.timeEventMapper = timeEventMapper;
     }
 
     @Override
@@ -75,5 +78,10 @@ public class TimeEventTagServiceImpl implements TimeEventTagService {
     public boolean reorder(TimeEventTagOrder timeEventTagOrder) {
         int count = timeEventTagOrderMapper.update(timeEventTagOrder);
         return count > 0;
+    }
+
+    @Override
+    public boolean anyEvent(TimeEventTag tag) {
+        return timeEventMapper.anyEvent(tag);
     }
 }
