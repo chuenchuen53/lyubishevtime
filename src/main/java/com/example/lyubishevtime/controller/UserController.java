@@ -1,8 +1,6 @@
 package com.example.lyubishevtime.controller;
 
-import com.example.lyubishevtime.request.user.LoginRequest;
-import com.example.lyubishevtime.request.user.RegisterRequest;
-import com.example.lyubishevtime.request.user.UpdatePasswordRequest;
+import com.example.lyubishevtime.request.user.*;
 import com.example.lyubishevtime.response.user.CurrentUserResponse;
 import com.example.lyubishevtime.response.user.LoginResponse;
 import com.example.lyubishevtime.response.user.RegisterResponse;
@@ -18,7 +16,7 @@ public class UserController {
     public UserController(UserService userService) {
         this.userService = userService;
     }
-    
+
     @PostMapping("register")
     public RegisterResponse register(@Validated @RequestBody RegisterRequest req) {
         return userService.register(req);
@@ -31,16 +29,16 @@ public class UserController {
 
     @PutMapping("personal-info/profile-pic")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateProfilePic(@RequestAttribute("userId") Integer userId,
-                                 @Validated @RequestParam String profilePic) {
-        userService.updatePersonInfo(userId, null, profilePic);
+    public void updateProfilePic(@Validated @RequestBody UpdateProfilePicRequest req,
+                                 @RequestAttribute("userId") Integer userId) {
+        userService.updatePersonInfo(userId, null, req.getProfilePic());
     }
 
     @PutMapping("personal-info/nickname")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateNickname(@RequestAttribute("userId") Integer userId,
-                               @Validated @RequestParam String nickname) {
-        userService.updatePersonInfo(userId, nickname, null);
+    public void updateNickname(@Validated @RequestBody UpdateNicknameRequest req,
+                               @RequestAttribute("userId") Integer userId) {
+        userService.updatePersonInfo(userId, req.getNickname(), null);
     }
 
     @PutMapping("auth/password")
