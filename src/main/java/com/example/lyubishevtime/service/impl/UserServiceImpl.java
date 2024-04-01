@@ -75,18 +75,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean updatePersonInfo(Integer userId, String nickname, String profilePic) {
+    public void updatePersonInfo(Integer userId, String nickname, String profilePic) {
         AppUserEntity appUserEntity = AppUserEntity.builder()
                 .id(userId)
                 .nickname(nickname)
                 .profilePic(profilePic)
                 .build();
-        int updated = appUserMapper.update(appUserEntity);
-        return updated == 1;
+        appUserMapper.update(appUserEntity);
     }
 
     @Override
-    public boolean updatePassword(Integer userId, String oldPassword, String newPassword) {
+    public void updatePassword(Integer userId, String oldPassword, String newPassword) {
         AppUserEntity appUserEntity = appUserMapper.selectById(userId);
         if (!BCrypt.checkpw(oldPassword, appUserEntity.getPassword())) {
             throw new ApiException(HttpStatus.UNAUTHORIZED, "Incorrect old password");
@@ -95,8 +94,7 @@ public class UserServiceImpl implements UserService {
                 .id(userId)
                 .password(BCrypt.hashpw(newPassword, BCrypt.gensalt()))
                 .build();
-        int updated = appUserMapper.update(updatedAppUser);
-        return updated == 1;
+        appUserMapper.update(updatedAppUser);
     }
 
     @Override

@@ -13,7 +13,7 @@ public interface UserService {
 
     LoginResponse login(LoginRequest req);
 
-    boolean updatePersonInfo(Integer userId, String nickname, String profilePic);
+    void updatePersonInfo(Integer userId, String nickname, String profilePic);
 
-    boolean updatePassword(Integer userId, String oldPassword, String newPassword);
+    void updatePassword(Integer userId, String oldPassword, String newPassword);
 }
