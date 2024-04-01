@@ -1,6 +1,5 @@
 package com.example.lyubishevtime.controller;
 
-import com.example.lyubishevtime.entity.AppUserEntity;
 import com.example.lyubishevtime.entity.TimeEventTagEntity;
 import com.example.lyubishevtime.entity.TimeEventTagOrderEntity;
 import com.example.lyubishevtime.exception.ApiException;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 public class TimeEventTagController {
     private final TimeEventTagService timeEventTagService;
 
-
     public TimeEventTagController(TimeEventTagService timeEventTagService) {
         this.timeEventTagService = timeEventTagService;
     }
@@ -28,12 +26,10 @@ public class TimeEventTagController {
     @PostMapping("time-event-tag")
     public AddTimeEventTagResponse addTimeEventTag(@Validated @RequestBody AddTimeEventTagRequest req,
                                                    @RequestAttribute("userId") Integer userId) {
-        AppUserEntity user = new AppUserEntity();
-        user.setId(userId);
         TimeEventTagEntity timeEventTagEntity = TimeEventTagEntity.builder()
+                .userId(userId)
                 .name(req.getName())
                 .color(req.getColor())
-                .userId(userId)
                 .build();
         return timeEventTagService.addTimeEventTag(timeEventTagEntity);
     }
@@ -48,10 +44,10 @@ public class TimeEventTagController {
     public void updateTimeEventTag(@Validated @RequestBody UpdateTimeEventTagRequest req,
                                    @RequestAttribute("userId") Integer userId) {
         TimeEventTagEntity timeEventTagEntity = TimeEventTagEntity.builder()
+                .userId(userId)
                 .id(req.getId())
                 .name(req.getName())
                 .color(req.getColor())
-                .userId(userId)
                 .build();
         boolean success = timeEventTagService.update(timeEventTagEntity);
         if (!success) {

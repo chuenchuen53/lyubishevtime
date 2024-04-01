@@ -13,7 +13,6 @@ import com.example.lyubishevtime.service.api.TimeEventTagService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -43,10 +42,10 @@ public class TimeEventTagServiceImpl implements TimeEventTagService {
 
     @Override
     public ListTimeEventTagResponse listTimeEventTag(Integer userId) {
-        var tagEntityList = (timeEventTagMapper.listTimeEventTag(userId));
-        var tagList = tagEntityList.stream().map(timeEventTagDtoMapper::entityToTimeEventTag).toList();
-        var tagOrderEntity = timeEventTagOrderMapper.findByUserId(userId);
-        List<Integer> tagOrder = tagOrderEntity == null ? Collections.emptyList() : tagOrderEntity.getTagIds();
+        List<TimeEventTagEntity> tagEntityList = (timeEventTagMapper.listTimeEventTag(userId));
+        List<TimeEventTag> tagList = tagEntityList.stream().map(timeEventTagDtoMapper::entityToTimeEventTag).toList();
+        TimeEventTagOrderEntity tagOrderEntity = timeEventTagOrderMapper.findByUserId(userId);
+        List<Integer> tagOrder = tagOrderEntity.getTagIds();
         return new ListTimeEventTagResponse(tagList, tagOrder);
     }
 
