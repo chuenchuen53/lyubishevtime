@@ -1,5 +1,6 @@
 package com.example.lyubishevtime.service.impl;
 
+import com.example.lyubishevtime.dto.mapper.TimeEventDtoMapper;
 import com.example.lyubishevtime.entity.TimeEventEntity;
 import com.example.lyubishevtime.entity.TimeEventTagEntity;
 import com.example.lyubishevtime.exception.ApiException;
@@ -21,10 +22,13 @@ import java.util.List;
 public class TimeEventServiceImpl implements TimeEventService {
     private final TimeEventMapper timeEventMapper;
     private final TimeEventTagMapper timeEventTagMapper;
+    private final TimeEventDtoMapper timeEventDtoMapper;
 
-    public TimeEventServiceImpl(TimeEventMapper timeEventMapper, TimeEventTagMapper timeEventTagMapper) {
+    public TimeEventServiceImpl(TimeEventMapper timeEventMapper, TimeEventTagMapper timeEventTagMapper,
+                                TimeEventDtoMapper timeEventDtoMapper) {
         this.timeEventMapper = timeEventMapper;
         this.timeEventTagMapper = timeEventTagMapper;
+        this.timeEventDtoMapper = timeEventDtoMapper;
     }
 
     @Override
@@ -38,14 +42,7 @@ public class TimeEventServiceImpl implements TimeEventService {
         }
 
         timeEventMapper.add(timeEventEntity);
-        TimeEvent event = TimeEvent.builder()
-                .id(timeEventEntity.getId())
-                .tagId(timeEventEntity.getTagId())
-                .date(timeEventEntity.getDate())
-                .name(timeEventEntity.getName())
-                .startTime(timeEventEntity.getStartTime())
-                .minute(timeEventEntity.getMinute())
-                .build();
+        TimeEvent event = timeEventDtoMapper.entityToTimeEvent(timeEventEntity);
         return new AddTimeEventResponse(event);
     }
 
@@ -74,14 +71,7 @@ public class TimeEventServiceImpl implements TimeEventService {
     public ListOneDayTimeEventResponse listOneDay(ListOneDayEventsFilter listOneDayEventsFilter) {
         List<TimeEventEntity> timeEventEntities = timeEventMapper.listWithOneDay(listOneDayEventsFilter);
         List<TimeEvent> timeEvents = timeEventEntities.stream()
-                .map((entity) -> TimeEvent.builder()
-                        .id(entity.getId())
-                        .tagId(entity.getTagId())
-                        .date(entity.getDate())
-                        .name(entity.getName())
-                        .startTime(entity.getStartTime())
-                        .minute(entity.getMinute())
-                        .build())
+                .map(timeEventDtoMapper::entityToTimeEvent)
                 .toList();
         ListOneDayTimeEventResponse response = new ListOneDayTimeEventResponse();
         response.setTimeEvents(timeEvents);
@@ -96,14 +86,7 @@ public class TimeEventServiceImpl implements TimeEventService {
             timeEventEntities.remove(timeEventEntities.size() - 1);
         }
         List<TimeEvent> timeEvents = timeEventEntities.stream()
-                .map((entity) -> TimeEvent.builder()
-                        .id(entity.getId())
-                        .tagId(entity.getTagId())
-                        .date(entity.getDate())
-                        .name(entity.getName())
-                        .startTime(entity.getStartTime())
-                        .minute(entity.getMinute())
-                        .build())
+                .map(timeEventDtoMapper::entityToTimeEvent)
                 .toList();
         ListTimeEventResponse response = new ListTimeEventResponse();
         response.setTimeEvents(timeEvents);

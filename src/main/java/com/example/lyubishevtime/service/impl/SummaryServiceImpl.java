@@ -1,5 +1,6 @@
 package com.example.lyubishevtime.service.impl;
 
+import com.example.lyubishevtime.dto.mapper.SummaryDtoMapper;
 import com.example.lyubishevtime.entity.TagSummaryInfoEntity;
 import com.example.lyubishevtime.mapper.SummaryMapper;
 import com.example.lyubishevtime.response.summary.GetSummaryResponse;
@@ -12,21 +13,18 @@ import java.util.List;
 @Service
 public class SummaryServiceImpl implements SummaryService {
     private final SummaryMapper summaryMapper;
+    private final SummaryDtoMapper summaryDtoMapper;
 
-    public SummaryServiceImpl(SummaryMapper summaryMapper) {
+    public SummaryServiceImpl(SummaryMapper summaryMapper, SummaryDtoMapper summaryDtoMapper) {
         this.summaryMapper = summaryMapper;
+        this.summaryDtoMapper = summaryDtoMapper;
     }
 
     @Override
     public GetSummaryResponse getSummary(Integer userId, LocalDate from, LocalDate to) {
         List<TagSummaryInfoEntity> summary = summaryMapper.getSummary(userId, from, to);
         List<GetSummaryResponse.TagInfo> tagInfos = summary.stream()
-                .map(tagSummaryInfoEntity -> GetSummaryResponse.TagInfo.builder()
-                        .tagId(tagSummaryInfoEntity.getTagId())
-                        .tagName(tagSummaryInfoEntity.getTagName())
-                        .totalMinutes(tagSummaryInfoEntity.getTotalMinutes())
-                        .color(tagSummaryInfoEntity.getColor())
-                        .build())
+                .map(summaryDtoMapper::entityToTagInfo)
                 .toList();
         return new GetSummaryResponse(tagInfos);
     }

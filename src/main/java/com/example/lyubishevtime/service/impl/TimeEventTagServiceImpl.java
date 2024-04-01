@@ -1,5 +1,6 @@
 package com.example.lyubishevtime.service.impl;
 
+import com.example.lyubishevtime.dto.mapper.TimeEventTagDtoMapper;
 import com.example.lyubishevtime.entity.TimeEventTagEntity;
 import com.example.lyubishevtime.entity.TimeEventTagOrderEntity;
 import com.example.lyubishevtime.mapper.TimeEventMapper;
@@ -7,6 +8,7 @@ import com.example.lyubishevtime.mapper.TimeEventTagMapper;
 import com.example.lyubishevtime.mapper.TimeEventTagOrderMapper;
 import com.example.lyubishevtime.response.tag.AddTimeEventTagResponse;
 import com.example.lyubishevtime.response.tag.ListTimeEventTagResponse;
+import com.example.lyubishevtime.response.tag.TimeEventTag;
 import com.example.lyubishevtime.service.api.TimeEventTagService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,44 +21,33 @@ public class TimeEventTagServiceImpl implements TimeEventTagService {
     private final TimeEventTagMapper timeEventTagMapper;
     private final TimeEventTagOrderMapper timeEventTagOrderMapper;
     private final TimeEventMapper timeEventMapper;
+    private final TimeEventTagDtoMapper timeEventTagDtoMapper;
 
     public TimeEventTagServiceImpl(TimeEventTagMapper timeEventTagMapper,
-                                   TimeEventTagOrderMapper timeEventTagOrderMapper, TimeEventMapper timeEventMapper) {
+                                   TimeEventTagOrderMapper timeEventTagOrderMapper, TimeEventMapper timeEventMapper,
+                                   TimeEventTagDtoMapper timeEventTagDtoMapper) {
         this.timeEventTagMapper = timeEventTagMapper;
         this.timeEventTagOrderMapper = timeEventTagOrderMapper;
         this.timeEventMapper = timeEventMapper;
+        this.timeEventTagDtoMapper = timeEventTagDtoMapper;
     }
 
     @Override
     @Transactional
     public AddTimeEventTagResponse addTimeEventTag(TimeEventTagEntity timeEventTagEntity) {
         timeEventTagMapper.addTimeEventTag(timeEventTagEntity);
-        var tag = com.example.lyubishevtime.response.tag.TimeEventTag
-                .builder()
-                .id(timeEventTagEntity.getId())
-                .name(timeEventTagEntity.getName())
-                .color(timeEventTagEntity.getColor())
-                .build();
         timeEventTagOrderMapper.appendTagId(timeEventTagEntity.getUserId(), timeEventTagEntity.getId());
+        TimeEventTag tag = timeEventTagDtoMapper.entityToTimeEventTag(timeEventTagEntity);
         return new AddTimeEventTagResponse(tag);
     }
 
     @Override
     public ListTimeEventTagResponse listTimeEventTag(Integer userId) {
         var tagEntityList = (timeEventTagMapper.listTimeEventTag(userId));
-        var tagList = tagEntityList.stream().map((x) -> com.example.lyubishevtime.response.tag.TimeEventTag
-                        .builder()
-                        .id(x.getId())
-                        .name(x.getName())
-                        .color(x.getColor())
-                        .build())
-                .toList();
+        var tagList = tagEntityList.stream().map((x) -> timeEventTagDtoMapper.entityToTimeEventTag(x)).toList();
         var tagOrderEntity = timeEventTagOrderMapper.findByUserId(userId);
         List<Integer> tagOrder = tagOrderEntity == null ? Collections.emptyList() : tagOrderEntity.getTagIds();
-        return ListTimeEventTagResponse.builder()
-                .timeEventTags(tagList)
-                .timeEventTagOrder(tagOrder)
-                .build();
+        return new ListTimeEventTagResponse(tagList, tagOrder);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.example.lyubishevtime.service.impl;
 
 import com.example.lyubishevtime.auth.JwtHelper;
+import com.example.lyubishevtime.dto.mapper.AppUserDtoMapper;
 import com.example.lyubishevtime.entity.AppUserEntity;
 import com.example.lyubishevtime.entity.TimeEventTagOrderEntity;
 import com.example.lyubishevtime.exception.ApiException;
@@ -24,25 +25,23 @@ public class UserServiceImpl implements UserService {
     private final AppUserMapper appUserMapper;
     private final TimeEventTagOrderMapper timeEventTagOrderMapper;
     private final JwtHelper jwtHelper;
+    private final AppUserDtoMapper appUserDtoMapper;
 
     public UserServiceImpl(AppUserMapper appUserMapper, TimeEventTagOrderMapper timeEventTagOrderMapper,
-                           JwtHelper jwtHelper) {
+                           JwtHelper jwtHelper, AppUserDtoMapper appUserDtoMapper) {
         this.appUserMapper = appUserMapper;
         this.timeEventTagOrderMapper = timeEventTagOrderMapper;
         this.jwtHelper = jwtHelper;
+        this.appUserDtoMapper = appUserDtoMapper;
     }
 
     @Override
     public CurrentUserResponse currentUser(int userId) {
         AppUserEntity appUser = appUserMapper.selectById(userId);
         String token = jwtHelper.createToken(Long.valueOf(appUser.getId()));
-        return CurrentUserResponse.builder()
-                .id(appUser.getId())
-                .username(appUser.getUsername())
-                .nickname(appUser.getNickname())
-                .profilePic(appUser.getProfilePic())
-                .token(token)
-                .build();
+        CurrentUserResponse resp = appUserDtoMapper.entityToCurrentUserResponse(appUser);
+        resp.setToken(token);
+        return resp;
     }
 
     @Override
@@ -78,13 +77,9 @@ public class UserServiceImpl implements UserService {
             throw new ApiException(HttpStatus.UNAUTHORIZED, "Incorrect username or password");
         }
         String token = jwtHelper.createToken(Long.valueOf(appUserEntity.getId()));
-        return LoginResponse.builder()
-                .id(appUserEntity.getId())
-                .username(appUserEntity.getUsername())
-                .nickname(appUserEntity.getNickname())
-                .profilePic(appUserEntity.getProfilePic())
-                .token(token)
-                .build();
+        LoginResponse resp = appUserDtoMapper.entityToLoginResponse(appUserEntity);
+        resp.setToken(token);
+        return resp;
     }
 
     @Override

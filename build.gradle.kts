@@ -28,6 +28,8 @@ dependencies {
     implementation("org.mindrot:jbcrypt:0.4")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0")
     annotationProcessor("org.projectlombok:lombok")
+    implementation("org.mapstruct:mapstruct:1.5.5.Final")
+    annotationProcessor("org.mapstruct:mapstruct-processor:1.5.5.Final")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3")
 }

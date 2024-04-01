@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
-
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<Data> handleApiException(ApiException ex) {
         Data data = new Data(ex.getMessage());
