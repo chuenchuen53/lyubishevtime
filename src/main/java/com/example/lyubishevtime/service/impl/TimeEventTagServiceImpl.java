@@ -44,7 +44,7 @@ public class TimeEventTagServiceImpl implements TimeEventTagService {
     @Override
     public ListTimeEventTagResponse listTimeEventTag(Integer userId) {
         var tagEntityList = (timeEventTagMapper.listTimeEventTag(userId));
-        var tagList = tagEntityList.stream().map((x) -> timeEventTagDtoMapper.entityToTimeEventTag(x)).toList();
+        var tagList = tagEntityList.stream().map(timeEventTagDtoMapper::entityToTimeEventTag).toList();
         var tagOrderEntity = timeEventTagOrderMapper.findByUserId(userId);
         List<Integer> tagOrder = tagOrderEntity == null ? Collections.emptyList() : tagOrderEntity.getTagIds();
         return new ListTimeEventTagResponse(tagList, tagOrder);

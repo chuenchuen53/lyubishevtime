@@ -9,6 +9,7 @@ import com.example.lyubishevtime.mapper.AppUserMapper;
 import com.example.lyubishevtime.mapper.TimeEventTagOrderMapper;
 import com.example.lyubishevtime.request.user.LoginRequest;
 import com.example.lyubishevtime.request.user.RegisterRequest;
+import com.example.lyubishevtime.response.user.AppUser;
 import com.example.lyubishevtime.response.user.CurrentUserResponse;
 import com.example.lyubishevtime.response.user.LoginResponse;
 import com.example.lyubishevtime.response.user.RegisterResponse;
@@ -36,30 +37,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public CurrentUserResponse currentUser(int userId) {
-        AppUserEntity appUser = appUserMapper.selectById(userId);
-        String token = jwtHelper.createToken(Long.valueOf(appUser.getId()));
-        CurrentUserResponse resp = appUserDtoMapper.entityToCurrentUserResponse(appUser);
-        resp.setToken(token);
-        return resp;
-    }
-
-    @Override
     @Transactional
     public RegisterResponse register(RegisterRequest req) {
-        if (isUsernameExist(req.getUsername())) {
+        if (appUserMapper.isUsernameExist(req.getUsername())) {
             throw new ApiException(HttpStatus.CONFLICT, "Username already exists");
         }
 
-        AppUserEntity appUser = AppUserEntity.builder()
+        AppUserEntity appUserEntity = AppUserEntity.builder()
                 .username(req.getUsername())
                 .password(BCrypt.hashpw(req.getPassword(), BCrypt.gensalt()))
                 .nickname(req.getNickname())
                 .build();
-        appUserMapper.insert(appUser);
+        appUserMapper.insert(appUserEntity);
 
         TimeEventTagOrderEntity timeEventTagOrderEntity = TimeEventTagOrderEntity.builder()
-                .userId(appUser.getId())
+                .userId(appUserEntity.getId())
                 .tagIds(Collections.emptyList())
                 .build();
         timeEventTagOrderMapper.insert(timeEventTagOrderEntity);
@@ -77,14 +69,9 @@ public class UserServiceImpl implements UserService {
             throw new ApiException(HttpStatus.UNAUTHORIZED, "Incorrect username or password");
         }
         String token = jwtHelper.createToken(Long.valueOf(appUserEntity.getId()));
-        LoginResponse resp = appUserDtoMapper.entityToLoginResponse(appUserEntity);
-        resp.setToken(token);
-        return resp;
-    }
-
-    @Override
-    public boolean isUsernameExist(String username) {
-        return appUserMapper.isUsernameExist(username);
+        AppUser appUser = appUserDtoMapper.entityToAppUser(appUserEntity);
+        appUser.setToken(token);
+        return new LoginResponse(appUser);
     }
 
     @Override
@@ -110,5 +97,14 @@ public class UserServiceImpl implements UserService {
                 .build();
         int updated = appUserMapper.update(updatedAppUser);
         return updated == 1;
+    }
+
+    @Override
+    public CurrentUserResponse currentUser(int userId) {
+        AppUserEntity appUserEntity = appUserMapper.selectById(userId);
+        String token = jwtHelper.createToken(Long.valueOf(appUserEntity.getId()));
+        AppUser appUser = appUserDtoMapper.entityToAppUser(appUserEntity);
+        appUser.setToken(token);
+        return new CurrentUserResponse(appUser);
     }
 }

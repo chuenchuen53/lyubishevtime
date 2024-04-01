@@ -11,8 +11,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SpringDocConfig {
 
-    private final String moduleName = "lyubishevtime";
-    private final String apiVersion = "1.0.0";
+    private final String APP_NAME = "lyubishevtime";
+    private final String API_VERSION = "1.0.0";
 
     static {
         io.swagger.v3.core.jackson.ModelResolver.enumsAsRef = true;
@@ -21,7 +21,7 @@ public class SpringDocConfig {
     @Bean
     public OpenAPI customOpenAPI() {
         final String securitySchemeName = "bearerAuth";
-        final String apiTitle = String.format("%s API", moduleName);
+        final String apiTitle = String.format("%s API", APP_NAME);
         return new OpenAPI()
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(
@@ -34,6 +34,6 @@ public class SpringDocConfig {
                                                 .bearerFormat("JWT")
                                 )
                 )
-                .info(new Info().title(apiTitle).version(apiVersion));
+                .info(new Info().title(apiTitle).version(API_VERSION));
     }
 }

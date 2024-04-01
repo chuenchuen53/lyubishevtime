@@ -13,8 +13,6 @@ public interface UserService {
 
     LoginResponse login(LoginRequest req);
 
-    boolean isUsernameExist(String username);
-
     boolean updatePersonInfo(Integer userId, String nickname, String profilePic);
 
     boolean updatePassword(Integer userId, String oldPassword, String newPassword);
