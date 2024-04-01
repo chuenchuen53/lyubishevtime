@@ -1,4 +1,4 @@
-package com.example.lyubishevtime.request.event;
+package com.example.lyubishevtime.repository.filters;
 
 
 import jakarta.validation.constraints.NotNull;

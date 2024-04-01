@@ -1,6 +1,5 @@
 package com.example.lyubishevtime.response.event;
 
-import com.example.lyubishevtime.response.tag.TimeEventTag;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,15 +12,9 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ListTimeEventResponse {
+public class ListTimeEventByTagIdResponse {
     @NotNull
     List<TimeEvent> timeEvents;
-
-    @NotNull
-    private List<TimeEventTag> timeEventTags;
-
-    @NotNull
-    private List<Integer> timeEventTagOrder;
 
     @NotNull
     private Boolean haveNext;

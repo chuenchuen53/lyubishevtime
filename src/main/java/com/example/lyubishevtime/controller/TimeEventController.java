@@ -2,16 +2,14 @@ package com.example.lyubishevtime.controller;
 
 import com.example.lyubishevtime.entity.TimeEventEntity;
 import com.example.lyubishevtime.exception.ApiException;
+import com.example.lyubishevtime.repository.filters.ListEventsFilter;
+import com.example.lyubishevtime.repository.filters.ListOneDayEventsFilter;
 import com.example.lyubishevtime.request.event.AddTimeEventRequest;
-import com.example.lyubishevtime.request.event.ListEventsFilter;
-import com.example.lyubishevtime.request.event.ListOneDayEventsFilter;
 import com.example.lyubishevtime.request.event.UpdateTimeEventRequest;
 import com.example.lyubishevtime.response.event.AddTimeEventResponse;
 import com.example.lyubishevtime.response.event.ListOneDayTimeEventResponse;
-import com.example.lyubishevtime.response.event.ListTimeEventResponse;
-import com.example.lyubishevtime.response.tag.ListTimeEventTagResponse;
+import com.example.lyubishevtime.response.event.ListTimeEventByTagIdResponse;
 import com.example.lyubishevtime.service.api.TimeEventService;
-import com.example.lyubishevtime.service.api.TimeEventTagService;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -27,11 +25,9 @@ import java.util.List;
 public class TimeEventController {
 
     private final TimeEventService timeEventService;
-    private final TimeEventTagService timeEventTagService;
 
-    public TimeEventController(TimeEventService timeEventService, TimeEventTagService timeEventTagService) {
+    public TimeEventController(TimeEventService timeEventService) {
         this.timeEventService = timeEventService;
-        this.timeEventTagService = timeEventTagService;
     }
 
     @PostMapping("time-event")
@@ -39,7 +35,6 @@ public class TimeEventController {
                                              @RequestAttribute("userId") Integer userId) {
         TimeEventEntity entity = TimeEventEntity.builder()
                 .userId(userId)
-                // .tag(tag)
                 .tagId(request.getTagId())
                 .date(request.getDate())
                 .name(request.getName())
@@ -76,7 +71,7 @@ public class TimeEventController {
         }
     }
 
-    @GetMapping("time-event")
+    @GetMapping("time-event/one-day")
     public ListOneDayTimeEventResponse getOneDayEvents(
             @RequestParam(required = false) List<Integer> tagIds,
             @RequestParam @NotNull @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
@@ -86,15 +81,11 @@ public class TimeEventController {
                 .date(date)
                 .tagIds(tagIds)
                 .build();
-        ListTimeEventTagResponse timeEvent = timeEventTagService.listTimeEventTag(userId);
-        ListOneDayTimeEventResponse response = timeEventService.listOneDay(filter);
-        response.setTimeEventTags(timeEvent.getTimeEventTags());
-        response.setTimeEventTagOrder(timeEvent.getTimeEventTagOrder());
-        return response;
+        return timeEventService.listOneDay(filter);
     }
 
     @GetMapping("time-event/all-tag-events/{tagId}/{page}/{pageSize}")
-    public ListTimeEventResponse getAllTagEvents(
+    public ListTimeEventByTagIdResponse getAllTagEvents(
             @Min(1) @PathVariable Integer tagId,
             @Min(1) @PathVariable Integer page,
             @Min(1) @PathVariable Integer pageSize,
@@ -105,10 +96,6 @@ public class TimeEventController {
                 .page(page)
                 .pageSize(pageSize)
                 .build();
-        ListTimeEventTagResponse timeEvent = timeEventTagService.listTimeEventTag(userId);
-        ListTimeEventResponse response = timeEventService.list(filter);
-        response.setTimeEventTags(timeEvent.getTimeEventTags());
-        response.setTimeEventTagOrder(timeEvent.getTimeEventTagOrder());
-        return response;
+        return timeEventService.listByTagId(filter);
     }
 }

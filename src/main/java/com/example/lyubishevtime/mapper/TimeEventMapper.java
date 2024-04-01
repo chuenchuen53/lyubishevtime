@@ -2,8 +2,8 @@ package com.example.lyubishevtime.mapper;
 
 import com.example.lyubishevtime.entity.TimeEventEntity;
 import com.example.lyubishevtime.entity.TimeEventTagEntity;
-import com.example.lyubishevtime.request.event.ListEventsFilter;
-import com.example.lyubishevtime.request.event.ListOneDayEventsFilter;
+import com.example.lyubishevtime.repository.filters.ListEventsFilter;
+import com.example.lyubishevtime.repository.filters.ListOneDayEventsFilter;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -21,9 +21,9 @@ public interface TimeEventMapper {
     @Delete("DELETE FROM time_event WHERE id = #{id} AND user_id = #{userId}")
     int delete(@Param("id") Integer id, @Param("userId") Integer userId);
 
-    List<TimeEventEntity> listWithOneDay(ListOneDayEventsFilter filter);
+    List<TimeEventEntity> listOneDay(ListOneDayEventsFilter filter);
 
-    List<TimeEventEntity> listAllTagEvents(ListEventsFilter filter);
+    List<TimeEventEntity> listByTagId(ListEventsFilter filter);
 
     @Select("SELECT EXISTS (SELECT 1 FROM time_event WHERE tag_id = #{id} AND user_id = #{userId})")
     boolean anyEventForTag(TimeEventTagEntity tag);
